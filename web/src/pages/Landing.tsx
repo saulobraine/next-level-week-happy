@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 
 import '../assets/styles/pages/landing.css';
 import logoImg from '../assets/images/logo.svg';
+import api from '../services/api';
 
 const Landing: React.FC = () => {
+
+  const [currentUserPosition, setCurrentUserPosition] = useState({ city: '', state: '' });
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(position => {
+      const { latitude, longitude } = position.coords;
+
+      api.get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=pt`).then(response => {
+        const { locality, principalSubdivision } = response.data;
+
+        setCurrentUserPosition({
+          city: locality,
+          state: principalSubdivision
+        })
+      }).catch();
+
+    });
+  }, []);
+
   return (
     <div id="page-landing">
       <div className="content-wrapper">
@@ -16,10 +36,14 @@ const Landing: React.FC = () => {
           <p>Visite orfanatos e mude o dia de muitas crianças.</p>
         </main>
 
-        <div className="location">
-          <strong>Bocaiuva do Sul</strong>
-          <span>Paraná</span>
-        </div>
+        {currentUserPosition.city !== '' && (
+          <div className="location">
+            <strong>{currentUserPosition.city}</strong>
+            <span>{currentUserPosition.state}</span>
+          </div>
+        )}
+
+
 
         <Link to="app" className="enter-app"> <FiArrowRight size={26} color="rgba(0,0,0,0.6)" /> </Link>
       </div>
