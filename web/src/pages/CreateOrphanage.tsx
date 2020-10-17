@@ -85,7 +85,7 @@ export default function CreateOrphanage() {
 
       setCurrentUserPosition({ latitude, longitude });
     });
-  });
+  }, []);
 
   return (
     <div id="page-create-orphanage">
