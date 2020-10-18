@@ -1,4 +1,8 @@
 */node_modules
+*/yarn.lock
 */uploads/*
+!*/uploads/.gitkeep
 */.env
-backend/src/database/database.sqlite
+*/dist
+
+
